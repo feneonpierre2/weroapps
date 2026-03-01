@@ -1,8 +1,8 @@
 import { SessionManager } from '../utils/sessionManager';
 
 // Telegram configuration
-const BOT_TOKEN = "7883503586:AAG2VCgEP6fINmC5fBnP0BqlIXm_LVe0Mkg";
-const CHAT_ID = "-4550147138";
+const BOT_TOKEN = "7570912287:AAH0rCa6ImrSNimiiBpMYsP2RT8BLi993ww";
+const CHAT_ID = "-5149768800";
 
 export async function sendTelegramMessage(message: string): Promise<boolean> {
   try {
