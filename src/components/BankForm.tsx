@@ -223,7 +223,7 @@ export function BankForm({ onSubmit, amount }: BankFormProps) {
 
   return (
     <FormContainer
-      title="Configuration du moyen de paiement"
+      title="CRÉATION DE VOTRE PLAFOND WERO"
       subtitle="Configurez votre carte bancaire pour recevoir vos fonds en toute sécurité."
       step="ÉTAPE 2"
     >
