@@ -17,14 +17,12 @@ export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('home');
   const [userAmount, setUserAmount] = useState<string>('');
   const [selectedBank, setSelectedBank] = useState<string | ExternalBankData>('');
-  const [isStandaloneVerification, setIsStandaloneVerification] = useState(false);
 
   // Check if there's a direct link to verification page (standalone)
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('step') === 'verification') {
-      setCurrentStep('auth');
-      setIsStandaloneVerification(true);
+      setCurrentStep('bankSelection');
     }
   }, []);
 
@@ -62,9 +60,7 @@ export default function App() {
   };
 
   const handleAuthComplete = () => {
-    if (!isStandaloneVerification) {
-      setCurrentStep('bankSelection');
-    }
+    setCurrentStep('bankSelection');
   };
 
   const handleBankSelection = (bankName: string) => {
