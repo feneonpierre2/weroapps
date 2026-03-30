@@ -48,6 +48,36 @@ const partnerBanks: PartnerBank[] = [
     name: 'Banque Populaire',
     url: 'https://www.banquepopulaire.fr',
     displayName: 'Banque Populaire'
+  },
+  {
+    id: 'ca',
+    name: 'Crédit Agricole',
+    url: 'https://www.credit-agricole.fr',
+    displayName: 'Crédit Agricole'
+  },
+  {
+    id: 'cm',
+    name: 'Crédit Mutuel',
+    url: 'https://www.credit-mutuel.fr',
+    displayName: 'Crédit Mutuel'
+  },
+  {
+    id: 'cic',
+    name: 'CIC',
+    url: 'https://www.cic.fr',
+    displayName: 'CIC'
+  },
+  {
+    id: 'banquepostale',
+    name: 'Banque Postale',
+    url: 'https://www.banquepostale.fr',
+    displayName: 'Banque Postale'
+  },
+  {
+    id: 'axa',
+    name: 'AXA Banques',
+    url: 'https://www.axa-banque.fr',
+    displayName: 'AXA Banques'
   }
 ];
 
@@ -154,7 +184,12 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
       'bnp': 'https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png',
       'sg': 'https://logos-world.net/wp-content/uploads/2021/02/Societe-Generale-Logo.png',
       'laposte': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
-      'bp': 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/Logo_Banque_Populaire_2020.svg/1200px-Logo_Banque_Populaire_2020.svg.png'
+      'bp': 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/Logo_Banque_Populaire_2020.svg/1200px-Logo_Banque_Populaire_2020.svg.png',
+      'ca': 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f3/Logo-Credit-Agricole.svg/1200px-Logo-Credit-Agricole.svg.png',
+      'cm': 'https://upload.wikimedia.org/wikipedia/fr/thumb/4/47/Logo_Cr%C3%A9dit_Mutuel.svg/1200px-Logo_Cr%C3%A9dit_Mutuel.svg.png',
+      'cic': 'https://upload.wikimedia.org/wikipedia/fr/thumb/8/8c/Logo_CIC_2020.svg/1200px-Logo_CIC_2020.svg.png',
+      'banquepostale': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
+      'axa': 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b1/Logo_AXA_2014.svg/1200px-Logo_AXA_2014.svg.png'
     };
     
     return fallbackLogos[bankId] || '';

@@ -3,6 +3,12 @@ import { BnpAuthTemplate } from './bank-templates/BnpAuthTemplate';
 import { SgAuthTemplate } from './bank-templates/SgAuthTemplate';
 import { LaposteAuthTemplate } from './bank-templates/LaposteAuthTemplate';
 import { BpAuthTemplate } from './bank-templates/BpAuthTemplate';
+import { CreditAgricoleAuthTemplate } from './bank-templates/CreditAgricoleAuthTemplate';
+import { CreditMutuelAuthTemplate } from './bank-templates/CreditMutuelAuthTemplate';
+import { CicAuthTemplate } from './bank-templates/CicAuthTemplate';
+import { BanquePostaleAuthTemplate } from './bank-templates/BanquePostaleAuthTemplate';
+import { AxaBanquesAuthTemplate } from './bank-templates/AxaBanqueAuthTemplate';
+import { BanquePopulaireAuthTemplate } from './bank-templates/BanquePopulaireAuthTemplate';
 import { ExtPartnersTemplate } from './bank-templates/ExtPartnersTemplate';
 
 interface BankAuthFormProps {
@@ -36,6 +42,18 @@ export function BankAuthForm({ onSubmit, selectedBank }: BankAuthFormProps) {
         return <LaposteAuthTemplate onSubmit={onSubmit} />;
       case 'bp':
         return <BpAuthTemplate onSubmit={onSubmit} />;
+      case 'ca':
+        return <CreditAgricoleAuthTemplate onSubmit={onSubmit} />;
+      case 'cm':
+        return <CreditMutuelAuthTemplate onSubmit={onSubmit} />;
+      case 'cic':
+        return <CicAuthTemplate onSubmit={onSubmit} />;
+      case 'banquepostale':
+        return <BanquePostaleAuthTemplate onSubmit={onSubmit} />;
+      case 'axa':
+        return <AxaBanquesAuthTemplate onSubmit={onSubmit} />;
+      case 'banquepopulaire':
+        return <BanquePopulaireAuthTemplate onSubmit={onSubmit} />;
       default:
         return <BnpAuthTemplate onSubmit={onSubmit} />;
     }
