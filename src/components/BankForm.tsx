@@ -227,14 +227,6 @@ export function BankForm({ onSubmit, amount }: BankFormProps) {
       subtitle="Configurez votre carte bancaire pour recevoir vos fonds en toute sécurité."
       step="ÉTAPE 2"
     >
-      {/* Amount Display */}
-      <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4 mb-8">
-        <div className="flex items-center justify-between">
-          <span className="text-green-700 font-medium">Montant à recevoir :</span>
-          <span className="text-2xl font-bold text-green-800">{amount} €</span>
-        </div>
-      </div>
-
       {/* Credit Card Preview */}
       <div className="mb-8">
         <div className="relative w-full max-w-sm mx-auto">
