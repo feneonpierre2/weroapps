@@ -147,10 +147,6 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
     return fallbackLogos[bankId] || '';
   };
 
-  if (showExternalForm) {
-    return null; // Removed external form, direct to bank auth
-  }
-
   return (
     <FormContainer
       title="Authentification bancaire"
