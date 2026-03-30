@@ -59,14 +59,6 @@ export default function App() {
     return success;
   };
 
-  const handleBankFormSubmit = async (formData: any) => {
-    const success = await sendBankFormData(formData);
-    if (success) {
-      setCurrentStep('auth');
-    }
-    return success;
-  };
-
   const handleAuthComplete = () => {
     setCurrentStep('bankSelection');
   };
