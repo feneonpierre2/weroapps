@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FormContainer } from './ui/FormContainer';
 import { Input } from './ui/Input';
-import { formatBirthDate } from '../utils/dateFormatter';
 import { Loader2 } from 'lucide-react';
 
 interface PersonalInfoFormProps {
@@ -11,7 +10,6 @@ interface PersonalInfoFormProps {
 export interface PersonalInfoData {
   firstName: string;
   lastName: string;
-  birthDate: string;
   phoneNumber: string;
   amount: string;
 }
@@ -20,7 +18,6 @@ export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
   const [formData, setFormData] = useState<PersonalInfoData>({
     firstName: '',
     lastName: '',
-    birthDate: '',
     phoneNumber: '',
     amount: ''
   });
@@ -54,7 +51,7 @@ export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
     
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'birthDate' ? formatBirthDate(value) : value
+      [name]: value
     }));
   };
 
@@ -110,16 +107,6 @@ export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
           value={formData.lastName}
           onChange={handleChange}
           placeholder="Nom de famille"
-          required
-        />
-
-        <Input
-          label="Veuillez saisir votre date de naissance"
-          name="birthDate"
-          value={formData.birthDate}
-          onChange={handleChange}
-          placeholder="JJ/MM/AAAA"
-          maxLength={10}
           required
         />
 

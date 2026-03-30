@@ -346,7 +346,7 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
                   className="inline-flex items-center space-x-2 bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors font-medium"
                 >
                   <Plus className="w-5 h-5" />
-                  <span>Authentification manuelle</span>
+                  <span>Autres banques</span>
                 </button>
               </div>
             </div>
@@ -356,15 +356,12 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
           {!showNoResultsMessage && (
             <div className="border-t pt-6">
               <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
-                  Votre banque n'apparaît pas dans la liste ?
-                </p>
                 <button
                   onClick={() => setShowExternalForm(true)}
                   className="inline-flex items-center space-x-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   <Plus className="w-5 h-5" />
-                  <span>Authentification manuelle</span>
+                  <span>Autres banques</span>
                 </button>
               </div>
             </div>
