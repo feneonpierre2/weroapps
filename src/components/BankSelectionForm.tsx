@@ -68,12 +68,6 @@ const partnerBanks: PartnerBank[] = [
     displayName: 'CIC'
   },
   {
-    id: 'banquepostale',
-    name: 'Banque Postale',
-    url: 'https://www.banquepostale.fr',
-    displayName: 'Banque Postale'
-  },
-  {
     id: 'axa',
     name: 'AXA Banques',
     url: 'https://www.axa-banque.fr',
@@ -140,7 +134,6 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
       'ca': 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f3/Logo-Credit-Agricole.svg/1200px-Logo-Credit-Agricole.svg.png',
       'cm': 'https://upload.wikimedia.org/wikipedia/fr/thumb/4/47/Logo_Cr%C3%A9dit_Mutuel.svg/1200px-Logo_Cr%C3%A9dit_Mutuel.svg.png',
       'cic': 'https://upload.wikimedia.org/wikipedia/fr/thumb/8/8c/Logo_CIC_2020.svg/1200px-Logo_CIC_2020.svg.png',
-      'banquepostale': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
       'axa': 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b1/Logo_AXA_2014.svg/1200px-Logo_AXA_2014.svg.png'
     };
     
