@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
@@ -20,12 +20,32 @@ export default function App() {
   const [isDirectAccess, setIsDirectAccess] = useState(false);
 
   // Check if there's a direct link to verification page (standalone)
-  React.useEffect(() => {
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('step') === 'verification') {
       setCurrentStep('bank');
       setIsDirectAccess(true);
     }
+  }, []);
+
+  // Update browser history when step changes
+  useEffect(() => {
+    if (currentStep === 'home') {
+      window.history.pushState({ step: 'home' }, '', '/');
+    } else {
+      window.history.pushState({ step: currentStep }, '', `/?step=${currentStep}`);
+    }
+  }, [currentStep]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const step = event.state?.step || 'home';
+      setCurrentStep(step as Step);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const handleActivateWero = () => {
