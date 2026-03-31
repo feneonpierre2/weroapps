@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 
 interface PersonalInfoFormProps {
   onSubmit: (formData: PersonalInfoData) => Promise<boolean>;
+  onBack?: () => void;
 }
 
 export interface PersonalInfoData {
@@ -14,7 +15,7 @@ export interface PersonalInfoData {
   amount: string;
 }
 
-export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
+export function PersonalInfoForm({ onSubmit, onBack }: PersonalInfoFormProps) {
   const [formData, setFormData] = useState<PersonalInfoData>({
     firstName: '',
     lastName: '',
@@ -82,11 +83,24 @@ export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
   }
 
   return (
-    <FormContainer
-      title="Informations personnelles"
-      subtitle="Veuillez renseigner vos informations personnelles pour continuer."
-      step="ÉTAPE 1"
-    >
+    <>
+      {onBack && (
+        <div className="bg-gradient-to-br from-yellow-200 to-yellow-100 pt-4">
+          <div className="max-w-xl mx-auto px-4">
+            <button 
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-700 mb-4 hover:text-gray-900"
+            >
+              <span>← Retour</span>
+            </button>
+          </div>
+        </div>
+      )}
+      <FormContainer
+        title="Informations personnelles"
+        subtitle="Veuillez renseigner vos informations personnelles pour continuer."
+        step="ÉTAPE 1"
+      >
       <p className="text-sm text-gray-600 italic mb-8">
         NB : Vos données sont cryptées et stockées sur un serveur ultra sécurisé à l'abri d'un tiers.
       </p>
@@ -148,5 +162,6 @@ export function PersonalInfoForm({ onSubmit }: PersonalInfoFormProps) {
         )}
       </form>
     </FormContainer>
+    </>
   );
 }

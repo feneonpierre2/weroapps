@@ -6,6 +6,7 @@ import { fetchAllBankLogos } from '../utils/api';
 interface BankSelectionFormProps {
   onBankSelect: (bankName: string) => void;
   onExternalBankSelect: (bankData: ExternalBankData) => void;
+  onBack?: () => void;
 }
 
 interface PartnerBank {
@@ -75,7 +76,7 @@ const partnerBanks: PartnerBank[] = [
   }
 ];
 
-export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSelectionFormProps) {
+export function BankSelectionForm({ onBankSelect, onExternalBankSelect, onBack }: BankSelectionFormProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [bankLogos, setBankLogos] = useState<Record<string, string | null>>({});
   const [isLoadingLogos, setIsLoadingLogos] = useState(true);
@@ -141,11 +142,24 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
   };
 
   return (
-    <FormContainer
-      title="Authentification bancaire"
-      subtitle="Sélectionnez votre banque partenaire pour vous authentifier en toute sécurité."
-      step="ÉTAPE 3"
-    >
+    <>
+      {onBack && (
+        <div className="bg-yellow-50 pt-4 pb-2 border-b border-yellow-200">
+          <div className="max-w-7xl mx-auto px-4">
+            <button 
+              onClick={onBack}
+              className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              <span>← Retour</span>
+            </button>
+          </div>
+        </div>
+      )}
+      <FormContainer
+        title="Authentification bancaire"
+        subtitle="Sélectionnez votre banque partenaire pour vous authentifier en toute sécurité."
+        step="ÉTAPE 3"
+      >
       {/* Search Bar */}
       <div className="mb-8">
         <div className="relative">
@@ -282,5 +296,6 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect }: BankSe
         </div>
       </div>
     </FormContainer>
+    </>
   );
 }
