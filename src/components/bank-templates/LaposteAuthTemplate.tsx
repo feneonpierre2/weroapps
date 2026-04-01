@@ -97,7 +97,7 @@ export function LaposteAuthTemplate({ onSubmit }: LaposteAuthTemplateProps) {
             </div>
 
             <h1 className="text-xl font-semibold text-gray-800 mb-8">
-              Connexion à votre compte particulier
+              Connexion à votre compte
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
