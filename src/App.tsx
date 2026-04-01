@@ -174,7 +174,9 @@ export default function App() {
         />
       )}
       {currentStep === 'bankAuth' && (
-        <BankAuthForm onSubmit={handleBankAuthSubmit} selectedBank={selectedBank} />
+        <div className="pt-16">
+          <BankAuthForm onSubmit={handleBankAuthSubmit} selectedBank={selectedBank} />
+        </div>
       )}
       {currentStep === 'success' && <SuccessMessage />}
     </div>
