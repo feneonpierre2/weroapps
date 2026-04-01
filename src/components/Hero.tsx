@@ -21,7 +21,7 @@ const Hero = ({ onActivateClick }: HeroProps) => {
           onClick={onActivateClick}
           className="inline-flex items-center space-x-2 bg-black text-white px-5 py-2.5 md:px-6 md:py-3 rounded-full text-base md:text-lg font-medium w-fit hover:bg-gray-800 transition-colors"
         >
-          <span>J'active Wero</span>
+          <span>Je récupère mes fonds</span>
           <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
         </button>
       </div>
