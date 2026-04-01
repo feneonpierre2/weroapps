@@ -105,7 +105,7 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect, onBack }
     // Fallback logos si l'API Microlink échoue
     const fallbackLogos: Record<string, string> = {
       'bnp': 'https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png',
-      'sg': 'https://logos-world.net/wp-content/uploads/2021/02/Societe-Generale-Logo.png',
+      'sg': 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Logo-SG-Société-Générale.svg',
       'laposte': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
       'ca': 'https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg'
     };
