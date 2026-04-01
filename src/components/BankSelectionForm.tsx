@@ -107,7 +107,7 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect, onBack }
       'bnp': 'https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png',
       'sg': 'https://logos-world.net/wp-content/uploads/2021/02/Societe-Generale-Logo.png',
       'laposte': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
-      'ca': 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f3/Logo-Credit-Agricole.svg/1200px-Logo-Credit-Agricole.svg.png'
+      'ca': 'https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg'
     };
     
     return fallbackLogos[bankId] || '';

@@ -85,7 +85,7 @@ export function CreditAgricoleAuthTemplate({ onSubmit }: CreditAgricoleAuthTempl
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
                 <img 
-                  src="https://upload.wikimedia.org/wikipedia/fr/thumb/f/f3/Logo-Credit-Agricole.svg/1200px-Logo-Credit-Agricole.svg.png" 
+                  src="https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg" 
                   alt="Crédit Agricole" 
                   className="h-8"
                 />
