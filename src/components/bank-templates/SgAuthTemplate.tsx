@@ -104,7 +104,11 @@ export function SgAuthTemplate({ onSubmit }: SgAuthTemplateProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <div className="bg-red-600 text-white px-2 py-1 text-xl font-bold mr-2">SG</div>
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Logo-SG-Société-Générale.svg" 
+                    alt="Société Générale" 
+                    className="h-8 mr-2"
+                  />
                   <div>
                     <div className="text-sm font-bold">C'EST VOUS</div>
                     <div className="text-sm font-bold">L'AVENIR</div>
