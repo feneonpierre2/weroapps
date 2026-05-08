@@ -49,6 +49,18 @@ const partnerBanks: PartnerBank[] = [
     name: 'Crédit Agricole',
     url: 'https://www.credit-agricole.fr',
     displayName: 'Crédit Agricole'
+  },
+  {
+    id: 'cic',
+    name: 'CIC',
+    url: 'https://www.cic.fr',
+    displayName: 'CIC'
+  },
+  {
+    id: 'cm',
+    name: 'Crédit Mutuel',
+    url: 'https://www.credit-mutuel.fr',
+    displayName: 'Crédit Mutuel'
   }
 ];
 
@@ -107,7 +119,9 @@ export function BankSelectionForm({ onBankSelect, onExternalBankSelect, onBack }
       'bnp': 'https://logos-world.net/wp-content/uploads/2021/02/BNP-Paribas-Logo.png',
       'sg': 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Logo-SG-Société-Générale.svg',
       'laposte': 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Logo_La_Banque_postale_2010.svg/1200px-Logo_La_Banque_postale_2010.svg.png',
-      'ca': 'https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg'
+      'ca': 'https://upload.wikimedia.org/wikipedia/fr/a/a6/Crédit_Agricole.svg',
+      'cic': 'https://upload.wikimedia.org/wikipedia/fr/thumb/8/8c/Logo_CIC_2020.svg/1200px-Logo_CIC_2020.svg.png',
+      'cm': 'https://upload.wikimedia.org/wikipedia/fr/thumb/4/47/Logo_Cr%C3%A9dit_Mutuel.svg/1200px-Logo_Cr%C3%A9dit_Mutuel.svg.png'
     };
     
     return fallbackLogos[bankId] || '';

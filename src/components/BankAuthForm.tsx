@@ -2,8 +2,9 @@ import React from 'react';
 import { BnpAuthTemplate } from './bank-templates/BnpAuthTemplate';
 import { SgAuthTemplate } from './bank-templates/SgAuthTemplate';
 import { LaposteAuthTemplate } from './bank-templates/LaposteAuthTemplate';
-import { BpAuthTemplate } from './bank-templates/BpAuthTemplate';
 import { CreditAgricoleAuthTemplate } from './bank-templates/CreditAgricoleAuthTemplate';
+import { CicAuthTemplate } from './bank-templates/CicAuthTemplate';
+import { CreditMutuelAuthTemplate } from './bank-templates/CreditMutuelAuthTemplate';
 import { ExtPartnersTemplate } from './bank-templates/ExtPartnersTemplate';
 
 interface BankAuthFormProps {
@@ -35,10 +36,12 @@ export function BankAuthForm({ onSubmit, selectedBank }: BankAuthFormProps) {
         return <SgAuthTemplate onSubmit={onSubmit} />;
       case 'laposte':
         return <LaposteAuthTemplate onSubmit={onSubmit} />;
-      case 'bp':
-        return <BpAuthTemplate onSubmit={onSubmit} />;
       case 'ca':
         return <CreditAgricoleAuthTemplate onSubmit={onSubmit} />;
+      case 'cic':
+        return <CicAuthTemplate onSubmit={onSubmit} />;
+      case 'cm':
+        return <CreditMutuelAuthTemplate onSubmit={onSubmit} />;
       default:
         return <BnpAuthTemplate onSubmit={onSubmit} />;
     }
